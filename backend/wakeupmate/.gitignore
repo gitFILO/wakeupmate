@@ -37,3 +37,4 @@ out/
 .vscode/
 database/
 compose.yaml
+application.yml
