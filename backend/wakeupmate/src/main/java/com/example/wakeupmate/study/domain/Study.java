@@ -34,6 +34,9 @@ public class Study extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private VerificationLevel verificationLevel;
 
+    @Enumerated(EnumType.STRING)
+    private StudyState studyState;
+
     @ElementCollection(targetClass = DayOfWeek.class)
     @Enumerated(EnumType.STRING)
     private Set<DayOfWeek> frequency = new HashSet<>();
