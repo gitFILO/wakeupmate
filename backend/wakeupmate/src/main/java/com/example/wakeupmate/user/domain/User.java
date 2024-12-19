@@ -27,9 +27,13 @@ public class User extends BaseEntity {
 
 
     @Builder
-    public User(String socialLoginId, String nickname, String profileImageUrl) {
-        this.socialLoginId = socialLoginId;
-        this.username = nickname;
-        this.profileImageUrl = profileImageUrl;
+    public User(String username, String email) {
+        this.email = email;
+        this.username = username;
+    }
+
+    public void update(String username, String email) {
+        this.email = email;
+        this.username = username;
     }
 }
