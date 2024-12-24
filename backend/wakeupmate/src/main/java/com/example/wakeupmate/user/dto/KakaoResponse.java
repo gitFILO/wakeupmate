@@ -3,14 +3,20 @@ package com.example.wakeupmate.user.dto;
 import java.util.Map;
 
 public class KakaoResponse implements OAuth2Response {
-    private final Map<String, Object> kakaoAccount;
-    private final Map<String, Object> profile;
-    private final Object id;
+    private final String id;
+    private final String email;
+    private final String nickname;
+    private final String profileImageUrl;
 
-    public KakaoResponse(Map<String, Object> attribute) {
-        this.id = attribute.get("id");
-        this.kakaoAccount = (Map<String, Object>) attribute.get("kakao_account");
-        this.profile = (Map<String, Object>) kakaoAccount.get("profile");
+    @SuppressWarnings("unchecked")
+    public KakaoResponse(Map<String, Object> attributes) {
+        this.id = String.valueOf(attributes.get("id"));
+        Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+
+        this.nickname = properties != null ? (String) properties.get("nickname") : null;
+        this.profileImageUrl = properties != null ? (String) properties.get("profile_image") : null;
+        this.email = kakaoAccount != null ? (String) kakaoAccount.get("email") : null;
     }
 
     @Override
@@ -20,16 +26,21 @@ public class KakaoResponse implements OAuth2Response {
 
     @Override
     public String getProviderId() {
-        return id.toString();
+        return id;
     }
 
     @Override
     public String getEmail() {
-        return kakaoAccount.get("email") != null ? kakaoAccount.get("email").toString() : null;
+        return email;
     }
 
     @Override
     public String getName() {
-        return profile.get("nickname") != null ? profile.get("nickname").toString() : null;
+        return nickname;
+    }
+
+    @Override
+    public String getProfileImageUrl() {
+        return profileImageUrl;
     }
 }

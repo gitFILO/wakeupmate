@@ -14,76 +14,73 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLOutput;
+
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class UserService extends DefaultOAuth2UserService{
+public class UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2Response oAuth2Response;
 
-        if (registrationId.equals("kakao")) {
+        if ("kakao".equals(registrationId)) {
             oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
-        }
-        else {
-            oAuth2Response = null;
-            return null;
+        } else {
+            throw new OAuth2AuthenticationException("Unsupported OAuth2 provider: " + registrationId);
         }
 
-        String userName = createUsername(oAuth2Response);
+        String userSocialLoginId = createSocialLoginId(oAuth2Response);
 
-        userRepository.findByUsername(userName)
-                .ifPresentOrElse(
-                        existingUser -> updateUser(existingUser, oAuth2Response),
-                        () -> addUser(oAuth2Response)
-                );
+        Long userId = userRepository.findBySocialLoginId(userSocialLoginId)
+                .map(this::loginUser)
+                .orElseGet(() -> addUser(oAuth2Response));
 
-        return createOAuth2UserFromOauth2Response(oAuth2Response);
+
+        return createOAuth2UserFromOauth2Response(userId, oAuth2Response);
     }
 
-    private void updateUser(User existingUser, OAuth2Response oAuth2Response) {
+    private Long loginUser(User existingUser) {
 
-        existingUser.update(
-                createUsername(oAuth2Response),
-                oAuth2Response.getEmail()
-        );
-
-        userRepository.save(existingUser);
+        return existingUser.getId();
     }
 
-    private void addUser(OAuth2Response oAuth2Response) {
-
+    private Long addUser(OAuth2Response oAuth2Response) {
         User user = User.builder()
-                .username(createUsername(oAuth2Response))
+                .socialLoginId(createSocialLoginId(oAuth2Response))
+                .profileImageUrl(oAuth2Response.getProfileImageUrl())
+                .username(oAuth2Response.getName())
                 .email(oAuth2Response.getEmail())
+                .role("ROLE_USER")
                 .build();
 
         userRepository.save(user);
-    }
 
-    private String createUsername(OAuth2Response oAuth2Response) {
+        return user.getId();
+}
 
-        return oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
+private String createSocialLoginId(OAuth2Response oAuth2Response) {
+        return oAuth2Response.getProvider() + "_" + oAuth2Response.getProviderId();
     }
 
     private UserDto getUserDtoFromOauth2Response(OAuth2Response oAuth2Response) {
 
         return UserDto.builder()
-                .username(createUsername(oAuth2Response))
-                .name(oAuth2Response.getName())
+                .socialLoginId(createSocialLoginId(oAuth2Response))
+                .username(oAuth2Response.getName())
+                .email(oAuth2Response.getEmail())
+                .profileImageUrl(oAuth2Response.getProfileImageUrl())
                 .role("ROLE_USER")
                 .build();
     }
 
-    private OAuth2User createOAuth2UserFromOauth2Response(OAuth2Response oAuth2Response) {
+    private OAuth2User createOAuth2UserFromOauth2Response(Long userId, OAuth2Response oAuth2Response) {
         UserDto userDto = getUserDtoFromOauth2Response(oAuth2Response);
-
-        return new CustomOauth2User(userDto);
+        return new CustomOauth2User(userId, userDto);
     }
 }

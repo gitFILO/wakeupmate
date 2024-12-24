@@ -25,11 +25,15 @@ public class User extends BaseEntity {
 
     private String email;
 
+    private String role;
 
     @Builder
-    public User(String username, String email) {
-        this.email = email;
+    public User(String socialLoginId, String profileImageUrl, String username, String email, String role) {
+        this.socialLoginId = socialLoginId;
+        this.profileImageUrl = profileImageUrl;
         this.username = username;
+        this.email = email;
+        this.role = role;
     }
 
     public void update(String username, String email) {
