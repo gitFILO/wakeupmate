@@ -33,9 +33,18 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'ch.qos.logback:logback-classic'
-	implementation 'org.apache.logging.log4j:log4j-to-slf4j'
-	implementation 'org.slf4j:jul-to-slf4j'
+
+	// swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+
+	// kafka
+	implementation 'org.springframework.kafka:spring-kafka'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+	// logging
+	implementation "com.github.danielwegener:logback-kafka-appender:0.1.0"
+	implementation 'net.logstash.logback:logstash-logback-encoder:5.2'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
