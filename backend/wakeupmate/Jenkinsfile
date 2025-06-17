@@ -17,8 +17,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                    docker-compose -f compose.yml down
-                    docker-compose -f compose.yml up -d --build
+                    docker-compose -f /wakeupmate/backend/wakeupmate/compose.yml down
+                    docker-compose -f /wakeupmate/backend/wakeupmate/compose.yml up -d --build
                     """
                 }
             }
