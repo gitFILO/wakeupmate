@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        COMPOSE_PATH = "backend/wakeupmate"
-    }
-
     stages {
         stage('Clone') {
             steps {
@@ -25,10 +21,12 @@ pipeline {
 
         stage('Build & Deploy') {
             steps {
-                sh '''
-                docker-compose -f ${COMPOSE_PATH}/docker-compose.yml down
-                docker-compose -f ${COMPOSE_PATH}/docker-compose.yml up -d --build
-                '''
+                script {
+                    sh """
+                    docker-compose -f wakeupmate/backend/wakeupmate/docker-compose.yml down
+                    docker-compose -f wakeupmate/backend/wakeupmate/docker-compose.yml up -d --build
+                    """
+                }
             }
         }
     }
