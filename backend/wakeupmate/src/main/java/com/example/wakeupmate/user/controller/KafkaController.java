@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/kafka")
 public class KafkaController {
-    private static final Logger kafkaLogger = LoggerFactory.getLogger(KafkaController.class);
+    private static final Logger kafkaLogger = LoggerFactory.getLogger("kafkaLogger");
+    // kafkaLogger 이름으로 구독중
 
     @RequestMapping(method = RequestMethod.GET, path = "")
     public String loggingTest()
