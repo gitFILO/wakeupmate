@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 
 export default function Home() {
   const [user, setUser] = useState(null);
-
+  
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+  
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch("http://localhost:8080/v1/users/profile", {
+        const response = await fetch(`${API_BASE_URL}/v1/users/profile`, {
           credentials: "include", // 쿠키 포함
         });
 
@@ -32,13 +34,13 @@ export default function Home() {
 
   // 카카오 로그인 핸들러
   const handleKakaoLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
+    window.location.href = `${API_BASE_URL}/oauth2/authorization/kakao`;
   };
 
   // 로그아웃 핸들러
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:8080/logout", {
+      await fetch(`${API_BASE_URL}/logout`, {
         method: "POST",
         credentials: "include", // 쿠키 포함
       });
