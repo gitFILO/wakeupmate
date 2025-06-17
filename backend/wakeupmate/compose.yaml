@@ -1,0 +1,105 @@
+version: '3'
+
+networks:
+  kafka_network:
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: board-mysql
+    restart: always
+    ports:
+      - 3307:3306
+    networks:
+      - kafka_network
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./database/datadir/:/var/lib/mysql
+      - ./database/init/:/docker_entrypoint-initdb.d/
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      - "29092:29092"        # 도커 외부
+      - "9092:9092"          # 도커 내부
+      - "39092:39092"        # 외부 클라이언트 전용 리스너
+      - "9093:9093"          # Controller 리스너
+    networks:
+      - kafka_network
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
+      KAFKA_LISTENERS: >
+        INTERNAL://0.0.0.0:9092,
+        EXTERNAL_DOCKER://0.0.0.0:29092,
+        EXTERNAL_HOST://0.0.0.0:39092,
+        CONTROLLER://0.0.0.0:9093
+
+      KAFKA_ADVERTISED_LISTENERS: >
+        INTERNAL://kafka:9092,
+        EXTERNAL_DOCKER://kafka:29092,
+        EXTERNAL_HOST://localhost:39092
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: >
+        INTERNAL:PLAINTEXT,
+        EXTERNAL_DOCKER:PLAINTEXT,
+        EXTERNAL_HOST:PLAINTEXT,
+        CONTROLLER:PLAINTEXT
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      CLUSTER_ID: ${KAFKA_CLUSTER_ID:-MkU3OEVBNTcwNTJENDM2Qk}
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+    networks:
+      - kafka_network
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.12.0
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    networks:
+      - kafka_network
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.12.0
+    container_name: logstash
+    ports:
+      - "5044:5044"
+    networks:
+      - kafka_network
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    depends_on:
+      - kafka
+      - elasticsearch
+
+volumes:
+  esdata:
