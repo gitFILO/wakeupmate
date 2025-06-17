@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        COMPOSE_PATH = "./"
+        COMPOSE_PATH = "backend/wakeupmate"
     }
 
     stages {
