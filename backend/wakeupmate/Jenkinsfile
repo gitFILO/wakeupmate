@@ -1,19 +1,34 @@
 pipeline {
     agent any
+
+    environment {
+        COMPOSE_PATH = "./"
+    }
+
     stages {
-        stage('Manual Git Clone') {
+        stage('Clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/gitFILO/wakeupmate.git'
+            }
+        }
+
+        stage('Create .env') {
             steps {
                 sh '''
-                rm -rf wakeupmate
-                git clone -b jenkinsfile-test https://github.com/gitFILO/wakeupmate.git
-                cd wakeupmate/backend/wakeupmate
-                ls -al
+                echo "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" > .env
+                echo "MYSQL_DATABASE=$MYSQL_DATABASE" >> .env
+                echo "MYSQL_USER=$MYSQL_USER" >> .env
+                echo "MYSQL_PASSWORD=$MYSQL_PASSWORD" >> .env
                 '''
             }
         }
-        stage('Test') {
+
+        stage('Build & Deploy') {
             steps {
-                echo "✅ Jenkinsfile executed after manual git clone!"
+                sh '''
+                docker-compose -f ${COMPOSE_PATH}/docker-compose.yml down
+                docker-compose -f ${COMPOSE_PATH}/docker-compose.yml up -d --build
+                '''
             }
         }
     }
