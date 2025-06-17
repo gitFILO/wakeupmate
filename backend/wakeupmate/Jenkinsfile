@@ -1,14 +1,19 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout') {
+        stage('Manual Git Clone') {
             steps {
-                checkout scm
+                sh '''
+                rm -rf wakeupmate
+                git clone -b jenkinsfile-test https://github.com/gitFILO/wakeupmate.git
+                cd wakeupmate/backend/wakeupmate
+                ls -al
+                '''
             }
         }
         stage('Test') {
             steps {
-                echo "✅ Jenkinsfile is being executed properly!"
+                echo "✅ Jenkinsfile executed after manual git clone!"
             }
         }
     }
