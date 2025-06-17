@@ -25,12 +25,10 @@ pipeline {
 
         stage('Build & Deploy') {
             steps {
-                script {
-                    sh """
-                    docker-compose -f ${COMPOSE_PATH}/docker-compose.yml down
-                    docker-compose -f ${COMPOSE_PATH}/docker-compose.yml up -d --build
-                    """
-                }
+                sh '''
+                docker-compose -f ${COMPOSE_PATH}/docker-compose.yml down
+                docker-compose -f ${COMPOSE_PATH}/docker-compose.yml up -d --build
+                '''
             }
         }
     }
