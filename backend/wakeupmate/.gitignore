@@ -37,4 +37,4 @@ out/
 .vscode/
 database/
 application.yml
-.env
+**/.env
