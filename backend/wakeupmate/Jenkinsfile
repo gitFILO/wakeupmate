@@ -1,32 +1,31 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Clone') {
-            steps {
-                git branch: 'main', url: 'https://github.com/gitFILO/wakeupmate.git'
-            }
-        }
+    environment {
+        MYSQL_ROOT_PASSWORD = credentials('mysql_root_password')
+        MYSQL_DATABASE = 'mydb'
+        MYSQL_USER = 'me'
+        MYSQL_PASSWORD = credentials('mysql_password')
+    }
 
+    stages {
         stage('Create .env') {
             steps {
                 sh '''
-                echo "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" > .env
-                echo "MYSQL_DATABASE=$MYSQL_DATABASE" >> .env
-                echo "MYSQL_USER=$MYSQL_USER" >> .env
-                echo "MYSQL_PASSWORD=$MYSQL_PASSWORD" >> .env
+                echo "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" > backend/wakeupmate/.env
+                echo "MYSQL_DATABASE=$MYSQL_DATABASE" >> backend/wakeupmate/.env
+                echo "MYSQL_USER=$MYSQL_USER" >> backend/wakeupmate/.env
+                echo "MYSQL_PASSWORD=$MYSQL_PASSWORD" >> backend/wakeupmate/.env
                 '''
             }
         }
 
         stage('Build & Deploy') {
             steps {
-                script {
-                    sh """
-                    docker-compose -f wakeupmate/backend/wakeupmate/docker-compose.yml down
-                    docker-compose -f wakeupmate/backend/wakeupmate/docker-compose.yml up -d --build
-                    """
-                }
+                sh '''
+                docker-compose -f backend/wakeupmate/docker-compose.yml down
+                docker-compose -f backend/wakeupmate/docker-compose.yml up -d --build
+                '''
             }
         }
     }
