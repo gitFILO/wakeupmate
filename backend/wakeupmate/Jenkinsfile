@@ -16,13 +16,16 @@ pipeline {
         stage('Build & Deploy') {
             steps {
                 script {
-                    // ✅ Compose 명령어 수정
                     sh """
                     docker compose -f ./backend/wakeupmate/compose.yaml down
                     docker compose -f ./backend/wakeupmate/compose.yaml up -d --build
                     """
 
-                    // Spring 빌드 및 로컬 실행
+                    sh """
+                    mkdir -p backend/wakeupmate/src/main/resources
+                    cp /var/jenkins_home/secure-configs/application.yml backend/wakeupmate/src/main/resources/application.yml
+                    """
+
                     sh """
                     cd backend/wakeupmate
                     ./gradlew clean build
