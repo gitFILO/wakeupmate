@@ -38,7 +38,7 @@ pipeline {
 
         stage('Compose Up (Rebuild)') {
             steps {
-                sh 'docker compose -f backend/wakeupmate/compose.yaml up -d --build --no-cache'
+                sh 'docker compose -f backend/wakeupmate/compose.yaml up -d --force-recreate'
             }
         }
     }
