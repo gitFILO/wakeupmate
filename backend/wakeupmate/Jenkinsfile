@@ -2,15 +2,6 @@ pipeline {
     agent any
 
     stages {
-
-        stage('Gradle Build') {
-            steps {
-                dir('backend/wakeupmate') {
-                    sh './gradlew clean build'
-                }
-            }
-        }
-
         stage('Create .env') {
             steps {
                 sh '''
@@ -28,6 +19,14 @@ pipeline {
                 mkdir -p backend/wakeupmate/src/main/resources
                 cp /var/jenkins_home/secure-configs/application.yml backend/wakeupmate/src/main/resources/application.yml
                 '''
+            }
+        }
+
+        stage('Gradle Build') {
+            steps {
+                dir('backend/wakeupmate') {
+                    sh './gradlew clean build'
+                }
             }
         }
 
