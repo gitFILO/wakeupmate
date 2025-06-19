@@ -2,6 +2,14 @@ pipeline {
     agent any
 
     stages {
+        stage('Gradle Build') {
+            steps {
+                dir('backend/wakeupmate') {
+                    sh './gradlew clean build'
+                }
+            }
+        }
+
         stage('Create .env') {
             steps {
                 sh '''
@@ -15,10 +23,10 @@ pipeline {
 
         stage('Copy application.yml') {
             steps {
-                sh """
+                sh '''
                 mkdir -p backend/wakeupmate/src/main/resources
                 cp /var/jenkins_home/secure-configs/application.yml backend/wakeupmate/src/main/resources/application.yml
-                """
+                '''
             }
         }
 
@@ -28,9 +36,9 @@ pipeline {
             }
         }
 
-        stage('Compose Up') {
+        stage('Compose Up (Rebuild)') {
             steps {
-                sh 'docker compose -f backend/wakeupmate/compose.yaml up -d --build'
+                sh 'docker compose -f backend/wakeupmate/compose.yaml up -d --build --no-cache'
             }
         }
     }
