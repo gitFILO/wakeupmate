@@ -6,7 +6,7 @@ networks:
 services:
   spring:
     build:
-      context: ./backend/wakeupmate
+      context: .
       dockerfile: Dockerfile
     container_name: spring-backend
     ports:

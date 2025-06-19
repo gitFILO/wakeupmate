@@ -16,27 +16,21 @@ pipeline {
         stage('Copy application.yml') {
             steps {
                 sh """
-                mkdir -p backend/wakeupmate/src/main/resources
-                cp /var/jenkins_home/secure-configs/application.yml backend/wakeupmate/src/main/resources/application.yml
+                mkdir -p src/main/resources
+                cp /var/jenkins_home/secure-configs/application.yml src/main/resources/application.yml
                 """
             }
         }
 
-        stage('Build with Gradle') {
+        stage('Compose Down') {
             steps {
-                sh """
-                cd backend/wakeupmate
-                ./gradlew build
-                """
+                sh 'docker compose -f compose.yml down'
             }
         }
 
-        stage('Docker Compose Up') {
+        stage('Compose Up') {
             steps {
-                sh """
-                docker compose -f ./backend/wakeupmate/compose.yaml down
-                docker compose -f ./backend/wakeupmate/compose.yaml up -d --build
-                """
+                sh 'docker compose -f compose.yml up -d --build'
             }
         }
     }
