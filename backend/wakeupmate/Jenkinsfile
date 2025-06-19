@@ -13,31 +13,30 @@ pipeline {
             }
         }
 
-        stage('Build & Deploy') {
+        stage('Copy application.yml') {
             steps {
-                script {
-                    sh """
-                    docker compose -f ./backend/wakeupmate/compose.yaml down
-                    docker compose -f ./backend/wakeupmate/compose.yaml up -d --build
-                    """
+                sh """
+                mkdir -p backend/wakeupmate/src/main/resources
+                cp /var/jenkins_home/secure-configs/application.yml backend/wakeupmate/src/main/resources/application.yml
+                """
+            }
+        }
 
-                    sh """
-                    mkdir -p backend/wakeupmate/src/main/resources
-                    cp /var/jenkins_home/secure-configs/application.yml backend/wakeupmate/src/main/resources/application.yml
-                    """
+        stage('Build with Gradle') {
+            steps {
+                sh """
+                cd backend/wakeupmate
+                ./gradlew build
+                """
+            }
+        }
 
-                    sh """
-                    cd backend/wakeupmate
-                    ./gradlew build
-
-                    PID=\$(lsof -ti :8080 || true)
-                    if [ ! -z "\$PID" ]; then
-                        kill -9 \$PID
-                    fi
-
-                    nohup java -jar build/libs/*.jar > spring.log 2>&1 &
-                    """
-                }
+        stage('Docker Compose Up') {
+            steps {
+                sh """
+                docker compose -f ./backend/wakeupmate/compose.yaml down
+                docker compose -f ./backend/wakeupmate/compose.yaml up -d --build
+                """
             }
         }
     }

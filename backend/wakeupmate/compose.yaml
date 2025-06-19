@@ -4,6 +4,22 @@ networks:
   kafka_network:
 
 services:
+  spring:
+    build:
+      context: ./backend/wakeupmate
+      dockerfile: Dockerfile
+    container_name: spring-backend
+    ports:
+      - "8080:8080"
+    networks:
+      - kafka_network
+    depends_on:
+      - db
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    volumes:
+      - ./backend/wakeupmate/src/main/resources/application.yml:/app/application.yml
+
   db:
     image: mysql:8.0
     container_name: board-mysql
