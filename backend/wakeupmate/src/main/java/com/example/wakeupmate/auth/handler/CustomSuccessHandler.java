@@ -39,7 +39,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String token = jwtUtil.createJwt(userId, role, 60 * 60 * 60L);
 
         response.addCookie(createCookie("Authorization", token));
-        response.sendRedirect("https://wakeupmate.vercel.app/");
+        response.sendRedirect("https://wakeupmate.my/");
     }
 
     private Cookie createCookie(String key, String value) {
