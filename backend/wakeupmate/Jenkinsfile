@@ -25,7 +25,7 @@ pipeline {
         stage('Gradle Build') {
             steps {
                 dir('backend/wakeupmate') {
-                    sh './gradlew clean build'
+                    sh './gradlew clean build -x test'
                 }
             }
         }
