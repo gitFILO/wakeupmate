@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -57,10 +58,12 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private String getAuthorizationToken(HttpServletRequest request) {
-        return Arrays.stream(request.getCookies())
+        return Optional.ofNullable(request.getCookies())
+                .stream()
+                .flatMap(Arrays::stream)
                 .filter(cookie -> "Authorization".equals(cookie.getName()))
-                .findFirst()
                 .map(Cookie::getValue)
+                .findFirst()
                 .orElse(null);
     }
 
