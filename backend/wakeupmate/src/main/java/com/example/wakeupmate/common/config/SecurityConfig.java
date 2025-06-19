@@ -41,6 +41,9 @@ public class SecurityConfig {
 
         //CORS
         http
+                .requiresChannel(channel -> channel
+                    .anyRequest().requiresSecure()
+                )
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
 
                     @Override
