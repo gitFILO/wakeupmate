@@ -17,10 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry corsRegistry) {
         corsRegistry.addMapping("/**")
                 .allowedOrigins(
-                "http://localhost:3000",
-                "https://wakeupmate.vercel.app",
-                "https://wakeupmate.my",
-                "https://www.wakeupmate.my"
+                "https://wakeupmate.my"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
