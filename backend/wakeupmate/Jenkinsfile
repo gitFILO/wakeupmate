@@ -28,7 +28,7 @@ pipeline {
 
                     sh """
                     cd backend/wakeupmate
-                    ./gradlew clean build
+                    ./gradlew build
 
                     PID=\$(lsof -ti :8080 || true)
                     if [ ! -z "\$PID" ]; then
