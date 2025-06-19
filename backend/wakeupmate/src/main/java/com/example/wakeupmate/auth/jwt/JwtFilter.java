@@ -59,12 +59,13 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private String getAuthorizationToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getCookies())
-                .stream().flatMap(Arrays::stream)
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) return null;
+
+        return Arrays.stream(cookies)
                 .filter(cookie -> "Authorization".equals(cookie.getName()))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
     }
-
 }
