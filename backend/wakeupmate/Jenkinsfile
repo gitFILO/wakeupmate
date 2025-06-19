@@ -24,13 +24,13 @@ pipeline {
 
         stage('Compose Down') {
             steps {
-                sh 'docker compose -f backend/wakeupmate/compose.yml down'
+                sh 'docker compose -f backend/wakeupmate/compose.yaml down'
             }
         }
 
         stage('Compose Up') {
             steps {
-                sh 'docker compose -f backend/wakeupmate/compose.yml up -d --build'
+                sh 'docker compose -f backend/wakeupmate/compose.yaml up -d --build'
             }
         }
     }
