@@ -13,7 +13,7 @@ export default function Home() {
         const response = await fetch(`${API_BASE_URL}/v1/users/profile`, {
           credentials: "include", // 쿠키 포함
         });
-
+        console.log(API_BASE_URL)
         if (response.ok) {
           const data = await response.json();
 
