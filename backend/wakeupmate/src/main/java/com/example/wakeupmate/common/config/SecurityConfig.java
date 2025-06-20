@@ -53,8 +53,10 @@ public class SecurityConfig {
                         CorsConfiguration configuration = new CorsConfiguration();
 
                         configuration.setAllowedOrigins(List.of(
-                                "https://wakeupmate.my"
-                        ));configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                                "https://wakeupmate.my",
+                                "https://api.wakeupmate.my"
+                        ));
+                        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
                         configuration.setMaxAge(3600L);
@@ -92,7 +94,13 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/swagger-ui/**", "/actuator/**").permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/swagger-ui/**",
+                                "/actuator/**",
+                                "/oauth2/**",
+                                "/login/oauth2/**"
+                        ).permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
