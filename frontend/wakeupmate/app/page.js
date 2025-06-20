@@ -8,15 +8,17 @@ export default function Home() {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   
   useEffect(() => {
+    console.log("api_base_Url: ", API_BASE_URL);
+    console.log("api_base_Url: ", API_BASE_URL);
+    
     const fetchUserProfile = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/v1/users/profile`, {
           credentials: "include", // 쿠키 포함
         });
-        console.log(API_BASE_URL)
+
         if (response.ok) {
           const data = await response.json();
-
           console.log(data.username, data.profileImageUrl);
           setUser({
             username: data.username,
