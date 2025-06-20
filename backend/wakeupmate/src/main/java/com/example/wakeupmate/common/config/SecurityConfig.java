@@ -42,9 +42,6 @@ public class SecurityConfig {
 
         //CORS
         http
-                .requiresChannel(channel -> channel
-                    .anyRequest().requiresSecure()
-                )
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
 
                     @Override
@@ -54,7 +51,6 @@ public class SecurityConfig {
 
                         configuration.setAllowedOrigins(List.of(
                                 "https://wakeupmate.my",
-                                "https://api.wakeupmate.my"
                         ));
                         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                         configuration.setAllowCredentials(true);

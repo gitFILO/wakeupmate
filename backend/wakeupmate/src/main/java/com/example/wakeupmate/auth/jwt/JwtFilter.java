@@ -17,8 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -40,6 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         Long userId = jwtUtil.getUserId(authorization);
+        System.out.println("Decoded userId: " + userId);
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidJwtException(ExceptionCode.FAILED_TO_VALIDATE_TOKEN));
