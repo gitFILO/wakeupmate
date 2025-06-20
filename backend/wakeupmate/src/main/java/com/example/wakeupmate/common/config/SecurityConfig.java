@@ -56,10 +56,9 @@ public class SecurityConfig {
                                 "https://wakeupmate.my",
                                 "https://www.wakeupmate.my",
                                 "https://wakeupmate.vercel.app"
-                        ));
-                        configuration.setAllowedMethods(Collections.singletonList("*"));
+                        ));configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                         configuration.setAllowCredentials(true);
-                        configuration.setAllowedHeaders(Collections.singletonList("*"));
+                        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
                         configuration.setMaxAge(3600L);
 
 //                        configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
