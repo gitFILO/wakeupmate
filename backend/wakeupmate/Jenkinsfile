@@ -22,6 +22,15 @@ pipeline {
             }
         }
 
+        stage('Prepare Logstash Config') {
+            steps {
+                sh '''
+                mkdir -p logstash/pipeline
+                cp backend/wakeupmate/logstash/pipeline/logstash.conf logstash/pipeline/logstash.conf
+                '''
+            }
+        }
+
         stage('Gradle Build') {
             steps {
                 dir('backend/wakeupmate') {
