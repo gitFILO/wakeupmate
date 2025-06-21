@@ -8,45 +8,40 @@ export default function Home() {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   
   useEffect(() => {
-    console.log("api_base_Url: ", API_BASE_URL);
-    console.log("api_base_Url: ", API_BASE_URL);
-    
     const fetchUserProfile = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/v1/users/profile`, {
-          credentials: "include", // 쿠키 포함
+          credentials: "include",
         });
-
+  
         if (response.ok) {
           const data = await response.json();
-          console.log(data.username, data.profileImageUrl);
           setUser({
             username: data.username,
             profileImageUrl: data.profileImageUrl,
           });
-          
+        } else {
+          setUser(null);
         }
       } catch (error) {
         console.error("Failed to fetch user profile:", error);
       }
     };
-
+  
     fetchUserProfile();
   }, []);
 
-  // 카카오 로그인 핸들러
   const handleKakaoLogin = () => {
     window.location.href = `${API_BASE_URL}/oauth2/authorization/kakao`;
   };
 
-  // 로그아웃 핸들러
   const handleLogout = async () => {
     try {
       await fetch(`${API_BASE_URL}/logout`, {
         method: "POST",
-        credentials: "include", // 쿠키 포함
+        credentials: "include", 
       });
-      setUser(null); // 사용자 정보 초기화
+      setUser(null); 
     } catch (error) {
       console.error("Failed to logout:", error);
     }
@@ -56,7 +51,6 @@ export default function Home() {
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <h1 className="text-2xl font-bold">Welcome!</h1>
 
-      {/* 로그인 상태에 따라 다른 UI 렌더링 */}
       {user ? (
         <div className="flex flex-col items-center gap-4">
           <img
