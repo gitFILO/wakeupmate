@@ -22,15 +22,6 @@ pipeline {
             }
         }
 
-        stage('Prepare Logstash Config') {
-            steps {
-                sh '''
-                mkdir -p ../logstash/pipeline
-                cp backend/wakeupmate/logstash/pipeline/logstash.conf logstash/pipeline/logstash.conf
-                '''
-            }
-        }
-
         stage('Gradle Build') {
             steps {
                 dir('backend/wakeupmate') {
@@ -53,7 +44,9 @@ pipeline {
 
         stage('Compose Up (Recreate)') {
             steps {
-                sh 'docker compose -f backend/wakeupmate/compose.yaml up -d --force-recreate'
+                dir('backend/wakeupmate') {
+                    sh 'docker compose up -d --force-recreate'
+                }
             }
         }
     }
