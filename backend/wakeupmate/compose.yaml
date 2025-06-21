@@ -111,10 +111,11 @@ services:
     container_name: logstash
     ports:
       - "5044:5044"
+      - "9600:9600"
     networks:
       - kafka_network
     volumes:
-      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - /var/jenkins_home/jobs/wakeupmate-test/workspace/logstash/pipeline:/usr/share/logstash/pipeline
     depends_on:
       - kafka
       - elasticsearch
