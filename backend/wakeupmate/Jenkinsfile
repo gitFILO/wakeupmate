@@ -22,12 +22,6 @@ pipeline {
             }
         }
 
-        stage('Check Directory') {
-            steps {
-                sh 'pwd && ls -al && ls -al backend/logstash/pipeline'
-            }
-        }
-
         stage('Prepare Logstash Config') {
             steps {
                 sh '''
