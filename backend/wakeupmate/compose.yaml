@@ -114,7 +114,7 @@ services:
     networks:
       - kafka_network
     volumes:
-      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./backend/wakeupmate/logstash/pipeline:/usr/share/logstash/pipeline
     depends_on:
       - kafka
       - elasticsearch
