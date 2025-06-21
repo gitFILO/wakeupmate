@@ -32,7 +32,7 @@ pipeline {
             steps {
                 sh '''
                 mkdir -p ../logstash/pipeline
-                cp logstash/pipeline/logstash.conf ../logstash/pipeline/logstash.conf
+                cp backend/wakeupmate/logstash/pipeline/logstash.conf logstash/pipeline/logstash.conf
                 '''
             }
         }
