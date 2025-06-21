@@ -22,11 +22,17 @@ pipeline {
             }
         }
 
+        stage('Check Directory') {
+            steps {
+                sh 'pwd && ls -al && ls -al backend/logstash/pipeline'
+            }
+        }
+
         stage('Prepare Logstash Config') {
             steps {
                 sh '''
                 mkdir -p logstash/pipeline
-                cp backend/wakeupmate/logstash/pipeline/logstash.conf logstash/pipeline/logstash.conf
+                cp logstash/pipeline/logstash.conf ../logstash/pipeline/logstash.conf
                 '''
             }
         }
