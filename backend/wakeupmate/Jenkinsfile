@@ -44,7 +44,9 @@ pipeline {
 
         stage('Compose Up (Recreate)') {
             steps {
-                sh 'docker compose -f backend/wakeupmate/compose.yaml up -d --force-recreate'
+                dir('backend/wakeupmate') {
+                    sh 'docker compose up -d --force-recreate'
+                }
             }
         }
     }

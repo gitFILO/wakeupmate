@@ -27,9 +27,22 @@ public class StudyUser {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(nullable = false)
+    private boolean approved = false;
+
     public StudyUser(final Study study, final User user) {
         this.study = study;
         this.user = user;
+        this.approved = false;
+    }
+
+    public StudyUser(final Study study, final User user, final boolean approved) {
+        this.study = study;
+        this.user = user;
+        this.approved = approved;
+    }
+
+    public void approve() {
+        this.approved = true;
     }
 }
-

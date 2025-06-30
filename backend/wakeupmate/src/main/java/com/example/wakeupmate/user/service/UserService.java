@@ -14,7 +14,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLOutput;
 
 @Transactional
 @RequiredArgsConstructor
@@ -37,12 +36,10 @@ public class UserService extends DefaultOAuth2UserService {
 
         String userSocialLoginId = createSocialLoginId(oAuth2Response);
 
-        Long userId = userRepository.findBySocialLoginId(userSocialLoginId)
-                .map(this::loginUser)
+        User user = userRepository.findBySocialLoginId(userSocialLoginId)
                 .orElseGet(() -> addUser(oAuth2Response));
 
-
-        return createOAuth2UserFromOauth2Response(userId, oAuth2Response);
+        return new CustomOauth2User(user);
     }
 
     private Long loginUser(User existingUser) {
@@ -50,7 +47,7 @@ public class UserService extends DefaultOAuth2UserService {
         return existingUser.getId();
     }
 
-    private Long addUser(OAuth2Response oAuth2Response) {
+    private User addUser(OAuth2Response oAuth2Response) {
         User user = User.builder()
                 .socialLoginId(createSocialLoginId(oAuth2Response))
                 .profileImageUrl(oAuth2Response.getProfileImageUrl())
@@ -61,7 +58,7 @@ public class UserService extends DefaultOAuth2UserService {
 
         userRepository.save(user);
 
-        return user.getId();
+        return user;
 }
 
 private String createSocialLoginId(OAuth2Response oAuth2Response) {
@@ -77,10 +74,5 @@ private String createSocialLoginId(OAuth2Response oAuth2Response) {
                 .profileImageUrl(oAuth2Response.getProfileImageUrl())
                 .role("ROLE_USER")
                 .build();
-    }
-
-    private OAuth2User createOAuth2UserFromOauth2Response(Long userId, OAuth2Response oAuth2Response) {
-        UserDto userDto = getUserDtoFromOauth2Response(oAuth2Response);
-        return new CustomOauth2User(userId, userDto);
     }
 }

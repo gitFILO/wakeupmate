@@ -8,7 +8,7 @@
             </layout>
         </encoder>
         <topic>spring-logs</topic>
-        <producerConfig>bootstrap.servers=localhost:39092</producerConfig>
+        <producerConfig>bootstrap.servers=kafka:9092</producerConfig>
         <neverBlock>true</neverBlock>
     </appender>
 

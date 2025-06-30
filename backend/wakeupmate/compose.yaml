@@ -19,6 +19,7 @@ services:
       SPRING_PROFILES_ACTIVE: prod
     volumes:
       - ./backend/wakeupmate/src/main/resources/application.yml:/app/application.yml
+      - ./backend/wakeupmate/src/main/resources/logback-spring.xml:/app/logback-spring.xml
 
   db:
     image: mysql:8.0
@@ -91,6 +92,7 @@ services:
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
     volumes:
       - esdata:/usr/share/elasticsearch/data
 
@@ -109,10 +111,11 @@ services:
     container_name: logstash
     ports:
       - "5044:5044"
+      - "9600:9600"
     networks:
       - kafka_network
     volumes:
-      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - /var/jenkins_home/jobs/wakeupmate-test/workspace/logstash/pipeline:/usr/share/logstash/pipeline
     depends_on:
       - kafka
       - elasticsearch
