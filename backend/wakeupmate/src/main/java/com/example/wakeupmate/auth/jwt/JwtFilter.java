@@ -43,9 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidJwtException(ExceptionCode.FAILED_TO_VALIDATE_TOKEN));
 
-        UserDto userDTO = UserDto.of(user);
-
-        CustomOauth2User customOAuth2User = new CustomOauth2User(userId,userDTO);
+        CustomOauth2User customOAuth2User = new CustomOauth2User(user);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null, customOAuth2User.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
