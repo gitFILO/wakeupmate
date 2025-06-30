@@ -8,8 +8,11 @@ import java.util.Set;
 
 @Data
 public class StudyRequestDto {
-    private String name;
-    private Set<DayOfWeek> days;
-    private LocalTime time;
-    private int verificationLevel;
+    private String title;
+    private String description;
+    private LocalTime wakeUpTime;
+    private Set<DayOfWeek> studyDays;
+    private Integer verificationLevel;
+    private Integer maxParticipants;
+    private Integer penalty;
 }

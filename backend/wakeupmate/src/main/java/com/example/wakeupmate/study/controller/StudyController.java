@@ -4,13 +4,12 @@ import com.example.wakeupmate.study.dto.StudyRequestDto;
 import com.example.wakeupmate.study.dto.StudyResponseDto;
 import com.example.wakeupmate.study.service.StudyService;
 import com.example.wakeupmate.user.domain.User;
-import com.example.wakeupmate.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-
 
 @RestController
 @RequestMapping("/study")
@@ -19,7 +18,9 @@ public class StudyController {
     private final StudyService studyService;
 
     @PostMapping
-    public ResponseEntity<Long> createStudy(@RequestBody StudyRequestDto requestDto, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Long> createStudy(@RequestBody StudyRequestDto requestDto,
+                                            @AuthenticationPrincipal User user) {
+
         return ResponseEntity.ok(studyService.createStudy(requestDto, user));
     }
 
@@ -50,5 +51,15 @@ public class StudyController {
     @GetMapping("/{studyId}")
     public ResponseEntity<StudyResponseDto> getStudyDetail(@PathVariable Long studyId, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(studyService.getStudyDetail(studyId, user));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<StudyResponseDto>> getAllStudies(Pageable pageable, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(studyService.getAllStudies(pageable, user));
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<Page<StudyResponseDto>> getMyStudies(Pageable pageable, User user) {
+        return ResponseEntity.ok(studyService.getMyStudies(pageable, user));
     }
 }

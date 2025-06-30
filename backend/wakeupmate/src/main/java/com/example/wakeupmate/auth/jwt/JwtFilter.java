@@ -4,7 +4,6 @@ import com.example.wakeupmate.common.exception.ExceptionCode;
 import com.example.wakeupmate.common.exception.InvalidJwtException;
 import com.example.wakeupmate.user.domain.User;
 import com.example.wakeupmate.user.dto.CustomOauth2User;
-import com.example.wakeupmate.user.dto.UserDto;
 import com.example.wakeupmate.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

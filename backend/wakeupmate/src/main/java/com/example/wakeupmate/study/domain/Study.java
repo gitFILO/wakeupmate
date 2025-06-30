@@ -6,7 +6,7 @@ import com.example.wakeupmate.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Time;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +28,9 @@ public class Study extends BaseEntity {
     @Column(nullable = false)
     private String studyName;
 
+    @Column(length = 1000)  // 설명 필드 추가
+    private String description;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "admin_id")
     private User admin;
@@ -47,27 +50,40 @@ public class Study extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "study_days", joinColumns = @JoinColumn(name = "study_id"))
     @Column(name = "day")
-    private Set<DayOfWeek> frequency = new HashSet<>();
+    private Set<DayOfWeek> studyDays = new HashSet<>();
 
     @Column(nullable = false)
-    private Time studyTime;
+    private LocalTime studyTime;
 
     @Column(nullable = false)
-    private int fineAmount = 2000;
+    private Integer maxParticipants = 10;
+
+    @Column(nullable = false)
+    private Integer penalty = 2000;
 
     public Study(StudyRequestDto dto, User admin) {
-        this.studyName = dto.getName();
+        this.studyName = dto.getTitle();
+        this.description = dto.getDescription();
         this.admin = admin;
-        this.studyTime = Time.valueOf(dto.getTime());
+        this.studyTime = dto.getWakeUpTime();
         this.verificationLevel = VerificationLevel.of(dto.getVerificationLevel());
-        this.frequency = Set.copyOf(dto.getDays());
+        this.studyDays = Set.copyOf(dto.getStudyDays());
+        this.maxParticipants = dto.getMaxParticipants() != null ? dto.getMaxParticipants() : 10;
+        this.penalty = dto.getPenalty() != null ? dto.getPenalty() : 2000;
         this.studyState = StudyState.ACTIVE;
     }
 
     public void update(StudyRequestDto dto) {
-        this.studyName = dto.getName();
-        this.studyTime = Time.valueOf(dto.getTime());
+        this.studyName = dto.getTitle();
+        this.description = dto.getDescription();
+        this.studyTime = dto.getWakeUpTime();
         this.verificationLevel = VerificationLevel.of(dto.getVerificationLevel());
-        this.frequency = Set.copyOf(dto.getDays());
+        this.studyDays = Set.copyOf(dto.getStudyDays());
+        if (dto.getMaxParticipants() != null) {
+            this.maxParticipants = dto.getMaxParticipants();
+        }
+        if (dto.getPenalty() != null) {
+            this.penalty = dto.getPenalty();
+        }
     }
 }
