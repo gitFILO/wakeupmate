@@ -1,5 +1,7 @@
 package com.example.wakeupmate.study.controller;
 
+import com.example.wakeupmate.location.dto.LocationRequestDto;
+import com.example.wakeupmate.location.dto.LocationResponseDto;
 import com.example.wakeupmate.study.dto.StudyRequestDto;
 import com.example.wakeupmate.study.dto.StudyResponseDto;
 import com.example.wakeupmate.study.service.StudyService;
@@ -10,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/study")
@@ -61,5 +65,30 @@ public class StudyController {
     @GetMapping("/my")
     public ResponseEntity<Page<StudyResponseDto>> getMyStudies(Pageable pageable, User user) {
         return ResponseEntity.ok(studyService.getMyStudies(pageable, user));
+    }
+
+    @PostMapping("/{studyId}/place/{placeId}")
+    public ResponseEntity<Void> setStudyPlace(
+            @PathVariable Long studyId,
+            @PathVariable Long placeId,
+            @AuthenticationPrincipal User user) {
+        studyService.setStudyPlace(studyId, placeId, user);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/location")
+    public ResponseEntity<Boolean> updateLocation(
+            @RequestBody LocationRequestDto requestDto,
+            @AuthenticationPrincipal User user) {
+        boolean isValid = studyService.updateLocationLog(requestDto, user);
+        return ResponseEntity.ok(isValid);
+    }
+
+    @GetMapping("/{studyId}/locations")
+    public ResponseEntity<List<LocationResponseDto>> getStudyLocations(
+            @PathVariable Long studyId,
+            @AuthenticationPrincipal User user) {
+        List<LocationResponseDto> locations = studyService.getStudyLocations(studyId, user);
+        return ResponseEntity.ok(locations);
     }
 }
