@@ -38,15 +38,25 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String token = jwtUtil.createJwt(userId, role, 60 * 60 * 60L);
 
-        response.addCookie(createCookie("Authorization", token));
+        Cookie cookie = createCookie("Authorization", token);
+        response.addCookie(cookie);
+
+        response.addHeader("Set-Cookie", String.format(
+                "%s=%s; Max-Age=%d; Path=/; HttpOnly; SameSite=None",
+                cookie.getName(), 
+                cookie.getValue(), 
+                cookie.getMaxAge()
+        ));
+        
         response.sendRedirect("https://wakeupmate.my");
+//        response.sendRedirect("http://localhost:3000");
     }
 
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(60*60*60);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 
