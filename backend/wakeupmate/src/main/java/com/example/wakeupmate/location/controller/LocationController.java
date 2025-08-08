@@ -33,8 +33,8 @@ public class LocationController {
         // 테스트용 헤더 우선 처리
         Long userId = userIdHeader != null ? Long.parseLong(userIdHeader) : user.getId();
         
-        // 사용자 존재 여부 확인
-        if (!userRepository.existsById(userId)) {
+        // dev 프로파일에서는 사용자 검증 생략
+        if (!activeProfiles.contains("dev") && !userRepository.existsById(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         
@@ -61,8 +61,8 @@ public class LocationController {
         // 테스트용 헤더 우선 처리
         Long userId = userIdHeader != null ? Long.parseLong(userIdHeader) : user.getId();
         
-        // 사용자 존재 여부 확인
-        if (!userRepository.existsById(userId)) {
+        // dev 프로파일에서는 사용자 검증 생략
+        if (!activeProfiles.contains("dev") && !userRepository.existsById(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 

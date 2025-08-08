@@ -5,16 +5,16 @@ import com.example.wakeupmate.location.dto.LocationResponse;
 import com.example.wakeupmate.place.domain.Place;
 import com.example.wakeupmate.study.domain.StudyUser;
 import com.example.wakeupmate.study.repository.StudyRepository;
+import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,7 +23,9 @@ import java.util.stream.Collectors;
 public class LocationService {
     
     private final StudyRepository studyRepository;
-    private final Map<String, Location> locationStore = new ConcurrentHashMap<>();
+    
+    @Qualifier("locationCache")
+    private final Cache<String, Location> locationCache;
 
     public void updateUserLocation(Long studyId, Long userId, BigDecimal latitude, BigDecimal longitude) {
         String key = studyId + ":" + userId;
@@ -41,19 +43,20 @@ public class LocationService {
                 .lastUpdated(LocalDateTime.now())
                 .build();
         
-        locationStore.put(key, location);
+        locationCache.put(key, location);
         
         log.info("Location updated - User: {}, Study: {}, Violating: {}, Distance: {}m from study place", 
                 userId, studyId, isViolating, Math.round(distance));
     }
     
     public List<LocationResponse> getStudyLocations(Long studyId) {
-        return locationStore.entrySet().stream()
+        return locationCache.asMap().entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(studyId + ":"))
                 .map(entry -> {
                     Location data = entry.getValue();
                     
-                    // 30초 이상 업데이트되지 않으면 오프라인 처리
+                    // 카페인 캐시가 TTL로 자동 만료 처리하므로 추가 확인 불필요
+                    // 하지만 혹시 모를 경우를 대비해 30초 체크 유지
                     if (data.getLastUpdated().isBefore(LocalDateTime.now().minusSeconds(30))) {
                         return null;
                     }
