@@ -25,6 +25,7 @@ public class BucketsCaffeineOuterChmInner implements StudyBuckets {
     public Map<Long, Location> snapshot(Long studyId) {
         Map<Long, Location> bucket = outer.getIfPresent(studyId);
         if (bucket == null || bucket.isEmpty()) return Collections.emptyMap();
-        return Map.copyOf(bucket);
+
+        return Collections.unmodifiableMap(bucket); // 약한 일관성을 통해 O(1) 복사
     }
 }
