@@ -13,7 +13,7 @@ public class LocationResponse {
     private BigDecimal latitude;
     private BigDecimal longitude;
     private boolean isViolating;
-    private double distanceFromStudy;
+    private Double distanceFromStudy;
     private LocalDateTime lastUpdated;
 
     private String placeName;
