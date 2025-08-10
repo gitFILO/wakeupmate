@@ -24,15 +24,12 @@ public class LocationController {
     public ResponseEntity<Void> updateLocation(
             @PathVariable Long studyId,
             @RequestBody LocationUpdateRequest request,
-            @RequestHeader(value = "X-User-Id", required = false) String userIdHeader,
             @AuthenticationPrincipal User user) {
-        
-        // 테스트용 헤더 우선 처리
-        Long userId = userIdHeader != null ? Long.parseLong(userIdHeader) : user.getId();
+
         
         locationService.updateUserLocation(
                 studyId, 
-                userId, 
+                user.getId(),
                 request.getLatitude(), 
                 request.getLongitude()
         );
@@ -47,11 +44,7 @@ public class LocationController {
     @GetMapping("/all")
     public ResponseEntity<List<LocationResponse>> getAllLocations(
             @PathVariable Long studyId,
-            @RequestHeader(value = "X-User-Id", required = false) String userIdHeader,
             @AuthenticationPrincipal User user) {
-        
-        // 테스트용 헤더 우선 처리
-        Long userId = userIdHeader != null ? Long.parseLong(userIdHeader) : user.getId();
 
         List<LocationResponse> locations = locationService.getStudyLocations(studyId);
         return ResponseEntity.ok(locations);
