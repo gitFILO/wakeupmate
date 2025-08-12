@@ -26,6 +26,6 @@ public class BucketsCaffeineOuterChmInner implements StudyBuckets {
         Map<Long, Location> bucket = outer.getIfPresent(studyId);
         if (bucket == null || bucket.isEmpty()) return Collections.emptyMap();
 
-        return Collections.unmodifiableMap(bucket); // 약한 일관성을 통해 O(1) 복사
+        return bucket; // 실시간 뷰 - weak consistency -> GC 부담 감소
     }
 }
