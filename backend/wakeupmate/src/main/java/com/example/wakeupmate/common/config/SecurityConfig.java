@@ -17,7 +17,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -50,11 +49,12 @@ public class SecurityConfig {
                         CorsConfiguration configuration = new CorsConfiguration();
 
                         configuration.setAllowedOrigins(List.of(
+                                "http://localhost:3000",
                                 "https://wakeupmate.my"
                         ));
                         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                         configuration.setAllowCredentials(true);
-                        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+                        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
                         configuration.setMaxAge(3600L);
 
                         configuration.setExposedHeaders(Arrays.asList("Authorization", "Set-Cookie"));

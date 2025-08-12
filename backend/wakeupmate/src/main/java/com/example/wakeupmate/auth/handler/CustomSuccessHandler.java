@@ -48,8 +48,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 cookie.getMaxAge()
         ));
         
-        response.sendRedirect("https://wakeupmate.my");
-//        response.sendRedirect("http://localhost:3000");
+//        response.sendRedirect("https://wakeupmate.my");
+        response.sendRedirect("http://localhost:3000");
     }
 
     private Cookie createCookie(String key, String value) {
